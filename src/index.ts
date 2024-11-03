@@ -1,4 +1,6 @@
 import { Bot, Context, webhookCallback } from 'grammy';
+import schedule from 'node-schedule';
+let job;
 
 export interface Env {
 	BOT_INFO: string;
@@ -25,8 +27,6 @@ const scheduleHttpCall = () => {
 	});
 };
 
-// const intervalId = setInterval(scheduleHttpCall, 15 * 60 * 1000); // Every 15 minutes
-
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const bot = new Bot(env.BOT_TOKEN, { botInfo: JSON.parse(env.BOT_INFO) });
@@ -48,9 +48,11 @@ export default {
 		});
 
 		bot.command('call', async (ctx: Context) => {
-			console.log(`HTTP GET request start`);
-			await ctx.reply(await scheduleHttpCall());
-			await ctx.reply('Inverso has been called');
+			job = schedule.scheduleJob('*/15 * * * *', async () => {
+				console.log(`HTTP GET request start`);
+				scheduleHttpCall();
+				await ctx.reply('Inverso has been called');
+			});
 		});
 
 		return webhookCallback(bot, 'cloudflare-mod')(request);
