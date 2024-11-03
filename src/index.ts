@@ -1,18 +1,17 @@
 import { Bot, Context, webhookCallback } from 'grammy';
-import axios from 'axios';
 
 export interface Env {
 	BOT_INFO: string;
 	BOT_TOKEN: string;
 }
 
-async function makeHttpGetRequest(url: string) {
+async function makeHttpGetRequest(url: string): Promise<any> {
 	try {
-		const response = await axios.get(url);
+		const response = await fetch(url);
 		console.log(`HTTP GET request successful. Status: ${response.status}`);
-		return response.data;
+		return await response.json();
 	} catch (error) {
-		console.log('Error making HTTP GET request:', error.message);
+		console.error('Error making HTTP GET request:', error instanceof Error ? error.message : String(error));
 		throw error;
 	}
 }
@@ -21,8 +20,8 @@ async function makeHttpGetRequest(url: string) {
 const scheduleHttpCall = () => {
 	const url = 'https://inverso-backend.onrender.com/api/items?populate=*&pagination[pageSize]=5';
 	console.log(`HTTP GET request calling: ${url}`);
-	makeHttpGetRequest(url).catch((error) => {
-		console.error('Failed to make HTTP GET request:', error.message);
+	return makeHttpGetRequest(url).catch((error) => {
+		console.error('Failed to make HTTP GET request:', error instanceof Error ? error.message : String(error));
 	});
 };
 
@@ -50,7 +49,7 @@ export default {
 
 		bot.command('call', async (ctx: Context) => {
 			console.log(`HTTP GET request start`);
-			scheduleHttpCall();
+			await ctx.reply(await scheduleHttpCall());
 			await ctx.reply('Inverso has been called');
 		});
 
