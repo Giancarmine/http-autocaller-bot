@@ -50,7 +50,7 @@ export default {
 
 		bot.command('call', async (ctx: Context) => {
 			console.log(`HTTP GET request start`);
-			await scheduleHttpCall();
+			scheduleHttpCall();
 			await ctx.reply('Inverso has been called');
 		});
 
