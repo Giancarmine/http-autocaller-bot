@@ -1,6 +1,7 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "http-autocaller-bot"
 main = "src/index.ts"
+account_id = "e188b491750a8cb1e1c3d16907ed3aa2"
 compatibility_date = "2024-10-22"
 compatibility_flags = ["nodejs_compat"]
 
