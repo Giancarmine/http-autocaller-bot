@@ -10,15 +10,16 @@
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.5.2",
+		"@types/node": "^22.8.7",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.6.3",
-		"@types/node": "^22.8.7",
 		"vitest": "2.0.5",
 		"wrangler": "^3.60.3"
 	},
 	"dependencies": {
-		"grammy": "^1.31.0",
 		"@grammyjs/parse-mode": "^1.10.0",
-		"@grammyjs/types": "^3.15.0"
+		"@grammyjs/types": "^3.15.0",
+		"axios": "^1.7.7",
+		"grammy": "^1.31.0"
 	}
 }

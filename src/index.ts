@@ -2,14 +2,14 @@ import { Bot, Context, webhookCallback } from 'grammy';
 import axios from 'axios';
 
 async function makeHttpGetRequest(url: string) {
-  try {
-    const response = await axios.get(url);
-    console.log(`HTTP GET request successful. Status: ${response.status}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error making HTTP GET request:', error.message);
-    throw error;
-  }
+	try {
+		const response = await axios.get(url);
+		console.log(`HTTP GET request successful. Status: ${response.status}`);
+		return response.data;
+	} catch (error) {
+		console.error('Error making HTTP GET request:', error.message);
+		throw error;
+	}
 }
 
 export interface Env {
@@ -34,6 +34,11 @@ export default {
 
 		bot.command('help', async (ctx: Context) => {
 			await ctx.reply('NO-ONE can help you.');
+		});
+
+		bot.command('call', async (ctx: Context) => {
+			scheduleHttpCall();
+			await ctx.reply('Inverso has been called.');
 		});
 
 		// Schedule the HTTP GET request every 15 minutes
