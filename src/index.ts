@@ -26,6 +26,7 @@ export default {
 			await ctx.reply(`The purpose of this bot is to schedule an HTTP call every X minutes`);
 			await bot.api.setMyCommands([
 				{ command: 'start', description: 'Start the bot' },
+				{ command: 'call', description: 'Call inverso strapi backend for test =]' },
 				{ command: 'help', description: 'Show help text' },
 			]);
 
@@ -37,7 +38,7 @@ export default {
 		});
 
 		bot.command('call', async (ctx: Context) => {
-			scheduleHttpCall();
+			await scheduleHttpCall();
 			await ctx.reply('Inverso has been called.');
 		});
 
