@@ -1,21 +1,32 @@
 import { Bot, Context, webhookCallback } from 'grammy';
 import axios from 'axios';
 
+export interface Env {
+	BOT_INFO: string;
+	BOT_TOKEN: string;
+}
+
 async function makeHttpGetRequest(url: string) {
 	try {
 		const response = await axios.get(url);
 		console.log(`HTTP GET request successful. Status: ${response.status}`);
 		return response.data;
 	} catch (error) {
-		console.error('Error making HTTP GET request:', error.message);
+		console.log('Error making HTTP GET request:', error.message);
 		throw error;
 	}
 }
 
-export interface Env {
-	BOT_INFO: string;
-	BOT_TOKEN: string;
-}
+// Schedule the HTTP GET request every 15 minutes
+const scheduleHttpCall = () => {
+	const url = 'https://inverso-backend.onrender.com/api/items?populate=*&pagination[pageSize]=5';
+	console.log(`HTTP GET request calling: ${url}`);
+	makeHttpGetRequest(url).catch((error) => {
+		console.error('Failed to make HTTP GET request:', error.message);
+	});
+};
+
+const intervalId = setInterval(scheduleHttpCall, 15 * 60 * 1000); // Every 15 minutes
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
@@ -38,19 +49,9 @@ export default {
 		});
 
 		bot.command('call', async (ctx: Context) => {
-			await scheduleHttpCall();
-			await ctx.reply('Inverso has been called.');
+			scheduleHttpCall();
+			await ctx.reply('Inverso has been called');
 		});
-
-		// Schedule the HTTP GET request every 15 minutes
-		const scheduleHttpCall = () => {
-			const url = 'https://inverso-backend.onrender.com/api/items?populate=*&pagination[pageSize]=5';
-			makeHttpGetRequest(url).catch((error) => {
-				console.error('Failed to make HTTP GET request:', error.message);
-			});
-		};
-
-		const intervalId = setInterval(scheduleHttpCall, 15 * 60 * 1000); // Every 15 minutes
 
 		return webhookCallback(bot, 'cloudflare-mod')(request);
 	},
